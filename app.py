@@ -1,5 +1,11 @@
 from flask import Flask, request, make_response, redirect, url_for
-from lib import redis_client, generate_unique_id, add_todo_item, get_todo_items
+from lib import (
+    redis_client,
+    generate_unique_id,
+    add_todo_item,
+    get_todo_items,
+    todo_item_help,
+)
 import pyvibe as pv
 import os
 
@@ -32,11 +38,11 @@ def index():
         form.add_formsubmit(label="Submit")
 
     todo_items = get_todo_items(session_id)
-    print(todo_items)
     for item in todo_items.values():
-        print(item)
+        todo_help = todo_item_help(item["item_name"])
         with page.add_card() as card:
             card.add_header(item["item_name"])
+            card.add_text(todo_help)
 
     if not session_id or not redis_client.exists(session_id):
         session_id = generate_unique_id()
