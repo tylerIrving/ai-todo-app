@@ -1,8 +1,13 @@
 import redis
 import uuid
 import json
+import openai
+from decouple import AutoConfig
 
+
+config = AutoConfig()
 redis_client = redis.Redis(host="localhost", port=6379, db=0)
+openai.api_key = config("OPENAI_API_KEY")
 
 
 def generate_unique_id():
@@ -26,6 +31,48 @@ def get_todo_items(session_id):
     }
 
     return todo_items
+
+
+def todo_item_help(prompt):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        temperature=0.3,
+        messages=[
+            {
+                "role": "system",
+                "content": "You are a helpful assistant. You read the user's todo list and help them with their tasks by suggesting actions they can take.",
+            },
+            {
+                "role": "user",
+                "content": "Buy milk",
+            },
+            {
+                "role": "assistant",
+                "content": "Find the nearest grocery store and buy milk.",
+            },
+            {
+                "role": "user",
+                "content": "Repair my phone screen",
+            },
+            {
+                "role": "assistant",
+                "content": "Find the nearest phone repair shop and repair my phone screen.",
+            },
+            {
+                "role": "user",
+                "content": "Pay rent",
+            },
+            {
+                "role": "assistant",
+                "content": "Pay rent on time to avoid late fees.",
+            },
+            {"role": "user", "content": prompt},
+        ],
+    )
+
+    result = response["choices"][0]["message"]["content"]
+
+    return result
 
 
 # def assign_task_to_user(user_id, task_id):
