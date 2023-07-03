@@ -1,6 +1,5 @@
-from flask import Flask, request, make_response, redirect, url_for
+from flask import Flask, request
 from lib import (
-    redis_client,
     generate_unique_id,
     add_todo_item,
     get_todo_items,
@@ -27,15 +26,23 @@ def index():
     page.add_header("Todo App")
 
     # TODO: session id doesn't exist after tab is closed
-    session_id = request.cookies.get("session_id")
+    session_id = request.args.get("session_id")
+    todo_item = request.args.get("todo_item")
+
+    if not session_id:
+        session_id = generate_unique_id()
+
+    if todo_item:
+        add_todo_item(session_id, {"item_name": todo_item, "completed": False})
 
     with page.add_card() as card:
         card.add_header("Todo Input")
-    with card.add_form(action="/add_todo", method="POST") as form:
+    with card.add_form(action="/") as form:
         form.add_formtext(
             label="", name="todo_item", placeholder="Enter your todo here"
         )
-        form.add_formsubmit(label="Submit")
+        form.add_formhidden(name="session_id", value=session_id)
+        form.add_formsubmit(label="Add Todo")
 
     todo_items = get_todo_items(session_id)
     for item in todo_items.values():
@@ -44,23 +51,7 @@ def index():
             card.add_header(item["item_name"])
             card.add_text(todo_help)
 
-    if not session_id or not redis_client.exists(session_id):
-        session_id = generate_unique_id()
-        response = make_response(page.to_html())
-        response.set_cookie("session_id", session_id)
-        return response
-
     return page.to_html()
-
-
-@app.route("/add_todo", methods=["POST"])
-def add_todo():
-    session_id = request.cookies.get("session_id")
-    add_todo_item(
-        session_id,
-        {"item_name": request.form.get("todo_item"), "completed": False},
-    )
-    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
