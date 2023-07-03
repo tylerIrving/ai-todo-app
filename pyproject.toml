@@ -12,6 +12,7 @@ pyvibe = "^0.0.5"
 flask = "^2.3.2"
 openai = "^0.27.7"
 redis = "^4.5.5"
+python-decouple = "^3.8"
 
 
 [build-system]
