@@ -62,7 +62,7 @@ def index():
                 form.add_formhidden(name="session_id", value=session_id)
                 form.add_formhidden(name="todo_item_id", value=key)
                 form.add_formhidden(name="todo_item", value=value.get("item_name", ""))
-                form.add_formsubmit(label="Complete Todo")
+                form.add_formsubmit(label="Delete Todo")
 
     return page.to_html()
 
