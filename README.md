@@ -9,6 +9,8 @@ The ChatGPT ToDo App is a Python-based web application that assists users in man
 - Contextual Suggestions: The GPT-3.5 model provides intelligent suggestions and recommendations based on user input, making task management easier and more efficient.
 - Task Management: Users can add and delete todo's using the UI.
 
+## App Example
+
 ## Requirements
 
 To run the App, make sure you have the following installed:
