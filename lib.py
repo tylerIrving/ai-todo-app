@@ -49,7 +49,7 @@ def todo_item_help(prompt):
         messages=[
             {
                 "role": "system",
-                "content": "You are a helpful assistant. You read the user's todo list and help them with their tasks by suggesting actions they can take.",
+                "content": "You are a helpful assistant. You read the user's todo item and help them with their tasks by suggesting actions they can take.",
             },
             {
                 "role": "user",
