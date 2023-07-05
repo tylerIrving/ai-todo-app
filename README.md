@@ -10,6 +10,7 @@ The ChatGPT ToDo App is a Python-based web application that assists users in man
 - Task Management: Users can add and delete todo's using the UI.
 
 ## App Example
+![Screenshot 2023-07-05 at 2 54 42 PM](https://github.com/tylerIrving/ai-todo-app/assets/98343634/95d3a2a6-25f8-46d0-a23b-ab26d2569b9f)
 
 ## Requirements
 
