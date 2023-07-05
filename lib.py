@@ -15,14 +15,14 @@ def generate_unique_id():
 
 
 def add_todo_item(session_id, todo_item_data):
-    # Store todo item using the cookie data as the key
+    # Store todo item using the session_id as the key
     redis_client.hset(
         f"todo_items: {session_id}", generate_unique_id(), json.dumps(todo_item_data)
     )
 
 
 def get_todo_items(session_id):
-    # Retrieve all todo items for a specific user
+    # Retrieve all todo items for a specific id
     todo_items = redis_client.hgetall(f"todo_items: {session_id}")
 
     # Convert the todo item data from JSON strings to dictionaries
@@ -33,7 +33,16 @@ def get_todo_items(session_id):
     return todo_items
 
 
+def update_todo_item(session_id, todo_item_id, todo_item_data):
+    # Update a todo item for a specific id
+    todo_item_data["ai_help"] = todo_item_help(todo_item_data["item_name"])
+    redis_client.hset(
+        f"todo_items: {session_id}", todo_item_id, json.dumps(todo_item_data)
+    )
+
+
 def todo_item_help(prompt):
+    # Generate help for a todo item
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         temperature=0.3,
@@ -73,24 +82,3 @@ def todo_item_help(prompt):
     result = response["choices"][0]["message"]["content"]
 
     return result
-
-
-# def assign_task_to_user(user_id, task_id):
-#     redis_client.sadd(f"user:{user_id}:tasks", task_id)
-
-
-# def get_tasks_for_user(user_id):
-#     task_ids = redis_client.smembers(f"user:{user_id}:tasks")
-#     tasks = []
-#     for task_id in task_ids:
-#         task_data = redis_client.hgetall(f"task:{task_id}")
-#         tasks.append(task_data)
-#     return tasks
-
-
-# def create_user(session_id):
-#     user_data = {
-#         "user_id": session_id,
-#     }
-
-#     redis_client.hmset(f"user:{session_id}", user_data)
