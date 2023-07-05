@@ -33,9 +33,16 @@ def get_todo_items(session_id):
     return todo_items
 
 
-def update_todo_item(session_id, todo_item_id, todo_item_data):
-    # Update a todo item for a specific id
+def update_todo_item_ai(session_id, todo_item_id, todo_item_data):
+    # Update a todo item for a specific id with AI help
     todo_item_data["ai_help"] = todo_item_help(todo_item_data["item_name"])
+    redis_client.hset(
+        f"todo_items: {session_id}", todo_item_id, json.dumps(todo_item_data)
+    )
+
+
+def update_todo_item_complete(session_id, todo_item_id, todo_item_data):
+    # Update a todo item for a specific id as completed
     redis_client.hset(
         f"todo_items: {session_id}", todo_item_id, json.dumps(todo_item_data)
     )
