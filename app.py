@@ -1,9 +1,9 @@
-from flask import Flask, request
+from flask import Flask, request, redirect, url_for
 from lib import (
     generate_unique_id,
     add_todo_item,
     get_todo_items,
-    todo_item_help,
+    update_todo_item,
 )
 import pyvibe as pv
 import os
@@ -45,13 +45,30 @@ def index():
         form.add_formsubmit(label="Add Todo")
 
     todo_items = get_todo_items(session_id)
-    for item in todo_items.values():
-        todo_help = todo_item_help(item["item_name"])
+    for key, value in todo_items.items():
         with page.add_card() as card:
-            card.add_header(item["item_name"])
-            card.add_text(todo_help)
+            card.add_header(f"Todo Item: {value.get('item_name', '')}")
+            if value.get("ai_help") is not None:
+                card.add_text(f"AI Help: {value.get('ai_help')}")
+        with card.add_form(action="/generate", method="POST") as form:
+            form.add_formhidden(name="session_id", value=session_id)
+            form.add_formhidden(name="todo_item_id", value=key)
+            form.add_formhidden(name="todo_item", value=value.get("item_name", ""))
+            form.add_formsubmit(label="Generate Help")
 
     return page.to_html()
+
+
+@app.route("/generate", methods=["POST"])
+def generate_todo_help():
+    session_id = request.form.get("session_id")
+    todo_item = request.form.get("todo_item")
+    todo_item_id = request.form.get("todo_item_id")
+    update_todo_item(
+        session_id, todo_item_id, {"item_name": todo_item, "completed": False}
+    )
+
+    return redirect(url_for("index", session_id=session_id))
 
 
 if __name__ == "__main__":
