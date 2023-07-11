@@ -10,8 +10,8 @@ The ChatGPT ToDo App is a Python-based web application that assists users in man
 - Task Management: Users can add and delete todo's using the UI.
 
 ## App Example
-![ai-todo-app](https://github.com/tylerIrving/ai-todo-app/assets/98343634/95ebe1d1-055a-46bb-928d-58ae39a85364)
 
+![ai-todo-app](https://github.com/tylerIrving/ai-todo-app/assets/98343634/95ebe1d1-055a-46bb-928d-58ae39a85364)
 
 ## Requirements
 
@@ -57,7 +57,13 @@ poetry install
 poetry shell
 ```
 
-5. Start the app
+5. Start Redis server
+
+```
+redis-server
+```
+
+6. Start the app
 
 ```
 python app.py
